@@ -129,6 +129,9 @@ func splitStudents(headers []string, data [][]string, ignoreHeader map[string]bo
 			case "Child's first name":
 				stud.FirstName = d[i]
 			default:
+				if s == nil {
+					log.Fatalf("header:%q, data:%q", headers[i], d[i])
+				}
 				s.Data = append(s.Data, element{headers[i], d[i]})
 			}
 		}
