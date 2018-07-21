@@ -12,6 +12,10 @@ var sections = {
   "First sibling's name": "Siblings",
 };
 
+var swaps = {
+  "Relationship to Child (contact2)": "Relationship to Child",
+};
+
 /**
  * A special function that runs when the spreadsheet is open, used to add a
  * custom menu to the spreadsheet.
@@ -22,6 +26,29 @@ function onOpen() {
     {name: 'selected', functionName: 'printSelected_'},
   ]);
 }
+
+function swap(headings, values, swaps) {
+  for (var h1 in swaps) {
+    // check if the property/key is defined in the object itself, not in parent
+    if (swaps.hasOwnProperty(h1)) {
+        pos1 = headings.indexOf(h1);
+        pos2 = headings.indexOf(swaps[h1]);
+        if (pos1 == -1 || pos2 == -1) {
+          // log? alert?
+          return;
+        }
+        tmp = headings[pos1];
+        headings[pos1] = headings[pos2];
+        headings[pos2] = tmp;
+
+                                     tmp = values[pos1];
+        values[pos1] = values[pos2];
+        values[pos2] = tmp;
+
+    }
+  }
+}
+    
 
 function printSelected_() {
   printRows_(true);    
@@ -37,6 +64,8 @@ function addChild_(body, headings, values) {
   
   var p = body.appendParagraph(lastName+ ", " + firstName);
   p.setHeading(DocumentApp.ParagraphHeading.HEADING1);
+
+  swap(headings, values, swaps);
   
   var table = body.appendTable();
   for (var j=0; j<headings.length; j++) {
